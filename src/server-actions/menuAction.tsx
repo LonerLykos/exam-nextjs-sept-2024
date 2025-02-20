@@ -1,5 +1,5 @@
 'use server';
-import {setCookie, deleteCookie} from "cookies-next/server";
+import {deleteCookie} from "cookies-next/server";
 import {cookies} from "next/headers";
 
 export const menuAction = async () => {

@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {IUserInfoWithTokens} from "@/models/user-with-token-model/IUserInfoWithToken";
-import {IResponse} from "@/models/response-model/IResponse";
 import {ITokenPair} from "@/models/token-model/ITokenPair";
 import {cookies} from "next/headers";
 import {getAuthUser} from "@/api/helper";
