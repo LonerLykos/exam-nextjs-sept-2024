@@ -1,0 +1,49 @@
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  form {
+    text-align: center;
+  }
+
+  h1{
+    margin-bottom: 10px;
+  }
+
+  label {
+    display: block;
+
+  }
+
+  select {
+    appearance: none;
+    border: 2px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 300px;
+    margin-bottom: 10px;
+    background: white url('../../../public/icons/down-arrow.png') no-repeat right 10px center;
+    background-size: 12px;
+  }
+
+  button {
+    padding: 5px;
+    width: 50%;
+    border-radius: 10px;
+    margin: 10px auto;
+
+    &.active {
+      border: 4px groove #00ff00;
+      background: rgba(34, 255, 0, 0.3);
+    }
+
+    &.disable {
+      border: 4px groove rgba(255, 60, 0, 0.2);
+      background: rgba(255, 60, 0, 0.1);
+    }
+  }
+
+}

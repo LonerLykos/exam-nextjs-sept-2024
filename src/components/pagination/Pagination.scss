@@ -1,0 +1,17 @@
+.pagination-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+
+
+  button{
+    padding: 5px;
+    border: 2px solid #ff6200;
+    border-radius: 10px;
+
+    &.number-page {
+      width: 30px;
+    }
+  }
+}

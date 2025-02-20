@@ -1,0 +1,55 @@
+.menu-wrapper {
+  width: 90%;
+  height: 50px;
+  margin: 0 auto;
+
+
+  &.unlogin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 145, 0, 0.32);
+    border-radius: 25px;
+  }
+
+  &.login {
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    grid-gap: 1rem;
+  }
+
+  img {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 0, 0, 0.11);
+    border-radius: 50%;
+  }
+
+  button {
+    border: 4px groove red;
+    padding: 5px;
+    border-radius: 10px;
+    background: rgba(255, 0, 0, 0.29);
+  }
+
+  .navigate {
+    display: inherit;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .pages {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+
+    &.active {
+      border-radius: 20px;
+      background: rgba(0, 50, 248, 0.22);
+      box-shadow: 2px 2px 4px rgba(48, 255, 0, 0.47);
+    }
+
+  }
+
+}
+
