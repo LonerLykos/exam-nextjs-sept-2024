@@ -1,4 +1,4 @@
-Проект задеплоєний на Vercel: https://exam-nextjs-sept-2024-113mozp21-lonerlykos-projects.vercel.app/
+Проект задеплоєний на Vercel: [https://exam-nextjs-sept-2024-113mozp21-lonerlykos-projects.vercel.app/](https://exam-nextjs-sept-2024-113mozp21-lonerlykos-projects.vercel.app)
 
 Про проект
 
