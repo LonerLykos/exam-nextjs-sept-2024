@@ -7,12 +7,17 @@
 
   .form-search {
     height: 50px;
+    text-align: center;
 
     input {
       border-radius: 5px;
       height: 32px;
       padding-left: 35px;
       background: white url('../../../public/icons/search.png') no-repeat left center;
+    }
+
+    p{
+      margin-top: 5px;
     }
   }
 
@@ -24,6 +29,7 @@
     border: 3px solid #0066ff;
     border-radius: 5px;
     background: #fbc900;
+    margin-top: 15px;
 
     li {
       margin-bottom: 5px;

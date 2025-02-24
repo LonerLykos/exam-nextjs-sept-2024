@@ -22,8 +22,8 @@ export const generateMetadata = async ({params}: Props): Promise<Metadata> => {
     }else if (slug && slug[0].includes('id')) {
 
         return {
-            title: "DetailsUserById metadata",
-            description: "User details choosen by id",
+            title: "DetailsRecipeById metadata",
+            description: `Recipe details chosen by id=${slug[0].split('%3D')[1]}`,
         }
 
     }else {

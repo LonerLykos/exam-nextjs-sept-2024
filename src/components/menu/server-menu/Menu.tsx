@@ -1,5 +1,4 @@
-import classNames from "classnames";
-import "./Menu.scss"
+'use server';
 import {getCookie} from "cookies-next/server";
 import {cookies} from "next/headers";
 import {IUserInfoWithTokens} from "@/models/user-with-token-model/IUserInfoWithToken";
@@ -13,8 +12,8 @@ export const Menu = async () => {
 
     return (
 
-        <div className={classNames('menu-wrapper', {'login': userWithToken}, {'unlogin': !userWithToken})}>
+        <>
             <ClientMenu userWithToken={userWithToken}/>
-        </div>
+        </>
     )
 };

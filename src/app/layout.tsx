@@ -8,11 +8,11 @@ import {Search} from "@/components/search/Search";
 export const metadata: Metadata = {
     title: "My site",
     description: "App for checking users and recipes",
-    // icons: {
-    //     icon: "/favicon/favicon-32x32.png",
-    //     shortcut: "/favicon/favicon.ico",
-    //     apple: "/favicon/apple-touch-icon.png",
-    // },
+    icons: {
+        icon: "/favicon/favicon-32x32.png",
+        shortcut: "/favicon/favicon.ico",
+        apple: "/favicon/apple-touch-icon.png",
+    },
 };
 
 export default function RootLayout({

@@ -1,9 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import {NextRequest, NextResponse} from 'next/server';
 
 export async function middleware(req: NextRequest) {
 
     const url = req.nextUrl.clone();
     const pathName = url.pathname;
+
+    if (req.headers.get('x-skip-redirect') === 'true') {
+        return NextResponse.next();
+    }
 
     if (pathName.startsWith('/_next') || pathName.startsWith('/static')) {
         return NextResponse.next();
@@ -12,7 +16,9 @@ export async function middleware(req: NextRequest) {
     const userWithToken = req.cookies.get('authUser');
     const authUser = userWithToken?.value ? JSON.parse(userWithToken.value) : null;
 
-    if (!authUser && pathName !== '/login' && pathName!== '/') {
+
+
+    if (!authUser && !req.nextUrl.pathname.startsWith('/login') && !req.nextUrl.pathname.startsWith('/')) {
         if (!req.nextUrl.pathname.startsWith('/api')) {
             url.pathname = '/login';
             const response = NextResponse.redirect(new URL('/login', req.nextUrl.origin));
@@ -23,20 +29,12 @@ export async function middleware(req: NextRequest) {
 
     }
 
-    if (pathName.startsWith('/login') && authUser){
-        const response = NextResponse.next();
-        response.cookies.delete('login');
-        response.cookies.delete('authUser');
-        response.cookies.set('error', 'error')
-        return response;
-    }
-
-    if (pathName.startsWith('/api') && authUser){
+    if (authUser && req.method === 'GET' && pathName.startsWith('/api')) {
         const token = authUser.accessToken;
         const requestHeaders = new Headers(req.headers);
         requestHeaders.set('Authorization', `Bearer ${token}`);
 
-        return NextResponse.next({ request: { headers: requestHeaders } });
+        return NextResponse.next({request: {headers: requestHeaders}});
     }
 }
 

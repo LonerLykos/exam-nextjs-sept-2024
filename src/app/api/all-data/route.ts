@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import {allService, refresh} from "@/api/api.services";
+import {allService, refresh} from "@/services/api.services";
 import {helper} from "@/app/api/all-data/util/helperTag";
+import {IResponse} from "@/models/response-model/IResponse";
+import {IUser} from "@/models/users-model/IUser";
+import {IRecipe} from "@/models/recipes-model/IRecipe";
 
 
 export async function GET(req: NextRequest) {
@@ -8,7 +11,9 @@ export async function GET(req: NextRequest) {
     const token = req.headers.get("Authorization");
 
     if (!token) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        const response = NextResponse.json('reject')
+        response.cookies.set("error", "error");
+        return response;
     }
 
     const url = new URL(req.url);
@@ -18,21 +23,20 @@ export async function GET(req: NextRequest) {
 
     try {
 
-        const users = await allService(type, params, 'Authorization', token);
+        const users = await allService<IResponse<IUser[]> | IResponse<IRecipe[]>>(type, params, 'Authorization', token);
         return NextResponse.json(users);
     } catch {
         try {
             const newUser = await refresh();
             const newToken = newUser.accessToken;
             const token = `Bearer ${newToken}`
-            const users = await allService(type, params, 'Authorization', token);
+            const users = await allService<IResponse<IUser[]> | IResponse<IRecipe[]>>(type, params, 'Authorization', token);
 
-            if (!users) {
-                return NextResponse.json({ message: 'Повторний запит не успішний' }, { status: 400 });
-            }
             return NextResponse.json(users);
         } catch {
-            return NextResponse.json({ message: 'Помилка оновлення токену' }, { status: 500 });
+            const response = NextResponse.json('reject')
+            response.cookies.set("error", "error");
+            return response;
         }
     }
 }

@@ -2,11 +2,12 @@
 import {FC} from "react";
 import "./RecipeItem.scss"
 import classNames from "classnames";
-import {IRecipes} from "@/models/recipes-model/IRecipes";
+import {IRecipe} from "@/models/recipes-model/IRecipe";
 import {useRouter} from "next/navigation";
+import Image from "next/image";
 
 interface Props {
-    item: IRecipes;
+    item: IRecipe;
 }
 
 export const RecipeItem: FC<Props> = ({item}) => {
@@ -23,7 +24,7 @@ export const RecipeItem: FC<Props> = ({item}) => {
 
     return (
         <div className={classNames('recipe-item-wrapper')}>
-            <img src={item.image} alt={item.name}/>
+            <Image src={item.image} alt={item.name} width='300' height='300'/>
             <div className={classNames('recipe-info')}>
                 <h2>{item.name}</h2>
                 <ul>Tags: {item.tags.map((tag: string, index: number) => <li key={index}>

@@ -30,7 +30,7 @@ export const FormLogin = () => {
         if (login === 'true') {
             router.push('/');
         }
-    }, [login]);
+    }, [login, router]);
 
 
     const {error, message} = useChecker(login, validation, newError)

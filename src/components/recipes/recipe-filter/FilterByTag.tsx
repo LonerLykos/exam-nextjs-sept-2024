@@ -1,18 +1,19 @@
 'use client';
 import "./FiltredByTag.scss"
 import classNames from "classnames";
-import {allRoute} from "@/api/route.services";
+import {allRoute, logout} from "@/services/route.services";
 import {useEffect, useState} from "react";
 import {IResponse} from "@/models/response-model/IResponse";
-import {IRecipes} from "@/models/recipes-model/IRecipes";
+import {IRecipe} from "@/models/recipes-model/IRecipe";
 import {taskProcessor} from "@/components/recipes/recipe-filter/util/util";
-import {useSearchParams, usePathname} from "next/navigation";
+import {useSearchParams, usePathname, useRouter} from "next/navigation";
 import {RecipeItem} from "@/components/recipes/recipe-item/RecipeItem";
 import {Pagination} from "@/components/pagination/Pagination";
 
 export const FilterByTag = () => {
 
     const searchParams = useSearchParams();
+    const searchParamsString = searchParams.toString()
     const params = searchParams?.get('page')
     const page = params ? parseInt(params) : 1;
     const itemsPerPage = 2;
@@ -20,26 +21,29 @@ export const FilterByTag = () => {
     const path = usePathname();
     const {type, tags} = taskProcessor(path || '');
     const paginationTag = `${tags[1]}`;
-
     const parameters = `?type=${type}&tag=${tags[0]}&typeTag=${tags[1]}&skip=${skip}&limit=${itemsPerPage}`;
-    const [data, setData] = useState<IResponse<IRecipes[]>>();
+    const [data, setData] = useState<IResponse<IRecipe[]>>();
+    const router = useRouter();
 
     useEffect(() => {
 
         const fetchData = async () => {
-            try {
-                const data = await allRoute(`slug-data${parameters}`);
+            const {data} = await allRoute<IResponse<IRecipe[]> | string>(`slug-data${parameters}`);
 
+            if (data === 'reject') {
+                const response = await logout();
+                if (response === 200) {
+                    router.push('/login');
+                }
+
+            } else if (typeof data === 'object') {
                 setData(data);
-            } catch (error) {
-                console.error("Error fetching data:", error);
             }
         };
 
         fetchData();
 
-    }, [searchParams.toString()]);
-
+    }, [searchParamsString, parameters, router]);
 
 
     return (

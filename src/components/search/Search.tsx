@@ -5,10 +5,12 @@ import {useEffect, useState} from "react";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
 import {schema} from "@/validator/search.validator";
-import {IRecipes} from "@/models/recipes-model/IRecipes";
+import {IRecipe} from "@/models/recipes-model/IRecipe";
 import {IUser} from "@/models/users-model/IUser";
 import {usePathname, useRouter} from "next/navigation";
-import {allRoute} from "@/api/route.services";
+import {useSwitcher} from "@/components/search/util/useSwitcher";
+import {logout} from "@/services/route.services";
+import {useGetCookie} from "cookies-next/client";
 
 interface ISearchData {
     searching: string;
@@ -17,77 +19,43 @@ interface ISearchData {
 
 export const Search = () => {
 
-    const {handleSubmit, register, formState: {errors}, watch, setValue, reset}
-        = useForm<ISearchData>({mode: 'onChange', resolver: zodResolver(schema)});
-
-    const searchValue = watch("searching", "");
-    const pathName = usePathname();
     const router = useRouter();
-
-    const [users, setUsers] = useState<IUser[]>();
-    const [recipes, setRecipes] = useState<IRecipes[]>();
-
-    const handleSearch = async (searchingData: ISearchData) => {
-        const params = searchingData.searching.trim();
-        const path = pathName.slice(1);
-
-
-        switch (pathName) {
-            case "/users":
-                if (params.length > 0) {
-                    if ((+params) && (+params) > 0) {
-                        const data = await allRoute(`search?type=${path}&id=${+params}`);
-
-                        if (Array.isArray(data)) {
-                            console.log('test')
-                            setUsers(data);
-                        } else if (data === 'error') {
-                            router.push('/login');
-                        }
-
-                    } else {
-
-                        const data = await allRoute(`search?type=${path}&params=${params}`);
-                        console.log('API Response', data)
-                        if (Array.isArray(data)) {
-                            console.log('test')
-                            setUsers(data);
-                        } else if (data === 'error') {
-                            router.push('/login');
-                        }
-                    }
-                }
-                break
-
-            case "/recipes":
-                if (params.length > 0) {
-                    if ((+params) && (+params) > 0) {
-
-                        const data = await allRoute(`search?type=${path}&id=${+params}`);
-                        if (Array.isArray(data)) {
-                            setRecipes(data);
-                        } else {
-                            setRecipes([]);
-                        }
-
-                    } else {
-                        const data = await allRoute(`search?type=${path}&params=${params}`);
-                        console.log('API Response', data)
-                        if (Array.isArray(data)) {
-                            console.log('test')
-                            setRecipes(data);
-                        } else if (data === 'error') {
-                            router.push('/login');
-                        }
-                    }
-                    break
-                }
-        }
-    };
+    const getCookie = useGetCookie();
 
     useEffect(() => {
-        handleSearch({searching: searchValue});
-    }, [searchValue, pathName]);
+        if (!getCookie('login') || getCookie('login') === 'false') {
+            router.push('/login');
+        }
+    }, [router ,getCookie]);
+
+    const {handleSubmit, register, formState: {errors}, watch, setValue, reset}
+        = useForm<ISearchData>({mode: 'onChange', resolver: zodResolver(schema)});
+    const searchValue = watch("searching", "");
+    const pathName = usePathname();
+
+    const [users, setUsers] = useState<IUser[]>();
+    const [recipes, setRecipes] = useState<IRecipe[]>();
+
+
+    const {usersData, recipesData, reject} = useSwitcher(pathName.slice(1), searchValue, pathName);
+
+    useEffect(() => {
+        if (usersData) setUsers(usersData);
+        if (recipesData) setRecipes(recipesData);
+
+        if (reject) {
+            const loginOut = async () => {
+                const response = await logout();
+                if (response === 200) {
+                    reset();
+                    router.push('/login');
+                }
+            };
+            loginOut();
+
+        }
+    }, [reset ,router, usersData, recipesData, reject]);
+
 
     const handleBlur = () => {
 
@@ -100,7 +68,7 @@ export const Search = () => {
     };
 
 
-    const handleChoise = (type: string, item: IRecipes | IUser) => {
+    const handleChoice = (type: string, item: IRecipe | IUser) => {
         if (type === 'user') {
             router.push(`/users/id=${item.id}`);
         } else {
@@ -113,10 +81,11 @@ export const Search = () => {
             {(pathName === "/users" || pathName === "/recipes") && (
                 <div className={classNames('form-wrapper')}>
                     <h3>Search</h3>
-                    <form className={classNames('form-search')} onChange={handleSubmit(handleSearch)}
+                    <form className={classNames('form-search')} onChange={handleSubmit(() => {
+                    })}
                           onBlur={handleBlur}>
                         <label>
-                            <input type="text" {...register('searching')}/>
+                            <input type='text' autoComplete='off' {...register('searching')}/>
                         </label>
                         <p className={!errors.searching ? 'hide' : 'view'}>{!errors.searching ? '' : errors.searching.message}</p>
                     </form>
@@ -126,7 +95,7 @@ export const Search = () => {
                             <ul>
                                 {users.map(user => (
                                     <li key={user.id}>
-                                        <button onClick={() => handleChoise('user', user)}>
+                                        <button onClick={() => handleChoice('user', user)}>
                                             {user.firstName} {user.lastName} with id: {user.id}
                                         </button>
                                     </li>
@@ -138,7 +107,7 @@ export const Search = () => {
                             <ul>
                                 {recipes.map(recipe => (
                                     <li key={recipe.id}>
-                                        <button onClick={() => handleChoise('recipe', recipe)}>
+                                        <button onClick={() => handleChoice('recipe', recipe)}>
                                             {recipe.name} with id: {recipe.id}
                                         </button>
                                     </li>

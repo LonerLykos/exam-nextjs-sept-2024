@@ -1,4 +1,4 @@
-import {IRecipes} from "@/models/recipes-model/IRecipes";
+import {IRecipe} from "@/models/recipes-model/IRecipe";
 import {IUser} from "@/models/users-model/IUser";
 import {IResponse} from "@/models/response-model/IResponse";
 
@@ -27,7 +27,7 @@ export const helperTagsRecipes = (searchParams: URLSearchParams) => {
     return {type: '', params: ''};
 };
 
-export const filterRecipe = (user: IUser, data: IResponse<IRecipes[]>) => {
+export const filterRecipe = (user: IUser, data: IResponse<IRecipe[]>) => {
     return data.recipes.filter(((recipe) => recipe.userId === user.id));
 }
 

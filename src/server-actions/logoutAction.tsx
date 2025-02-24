@@ -2,7 +2,7 @@
 import {deleteCookie} from "cookies-next/server";
 import {cookies} from "next/headers";
 
-export const menuAction = async () => {
+export const logoutAction = async () => {
     await deleteCookie('authUser', {cookies});
-    await deleteCookie('login', {cookies})
+    await deleteCookie('login', {cookies});
 }

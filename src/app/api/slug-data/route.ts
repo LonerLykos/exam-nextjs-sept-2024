@@ -7,7 +7,9 @@ export async function GET(req: NextRequest) {
     const token = req.headers.get("Authorization");
 
     if (!token) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        const response = NextResponse.json('reject')
+        response.cookies.set("error", "error");
+        return response;
     }
 
     const urlMy = new URL(req.url);

@@ -1,13 +1,15 @@
 'use client';
 import "./RecipeDetails.scss"
 import classNames from "classnames";
-import {usePathname} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import {taskProcessor} from "@/components/recipes/recipe-filter/util/util";
 import {useEffect, useState} from "react";
-import {IRecipes} from "@/models/recipes-model/IRecipes";
-import {allRoute} from "@/api/route.services";
+import {IRecipe} from "@/models/recipes-model/IRecipe";
+import {allRoute, logout} from "@/services/route.services";
 import {IUser} from "@/models/users-model/IUser";
 import Link from "next/link";
+import {IRecipeWithUser} from "@/models/rsponse-for-recipe-with-user/IRecipeWithUser";
+import Image from "next/image";
 
 
 export const RecipeDetails = () => {
@@ -15,32 +17,39 @@ export const RecipeDetails = () => {
     const path = usePathname();
     const {type, tags} = taskProcessor(path || '')
     const parameters = `?type=${type}&tag=${tags[0]}&typeTag=${tags[1]}`;
-
-    const [recipe, setRecipe] = useState<IRecipes>();
+    const router = useRouter();
+    const [recipe, setRecipe] = useState<IRecipe>();
     const [user, setUser] = useState<IUser>();
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const {recipe, user} = await allRoute(`slug-data${parameters}`);
 
-                setRecipe(recipe);
-                setUser(user);
-            } catch (error) {
-                console.error("Error fetching data:", error);
+        const fetchData = async () => {
+            const {data} = await allRoute<IRecipeWithUser | string>(`slug-data${parameters}`);
+
+            if (data === 'reject') {
+                const response = await logout();
+                if (response === 200) {
+                    router.push('/login');
+                }
+
+            } else if (typeof data === 'object') {
+                setRecipe(data.recipe);
+                setUser(data.user);
             }
         };
 
         fetchData();
-    }, [path]);
+
+    }, [router, path, parameters]);
 
     return (
         <div className={classNames('recipe-details-wrapper')}>
             {recipe && user &&
                 <>
-                    <h2>{recipe.name} edited by {<span><Link href={`/users/id=${user.id}`}>{user.firstName} {user.lastName}</Link></span>}</h2>
+                    <h2>{recipe.name} edited by {<span><Link
+                        href={`/users/id=${user.id}`}>{user.firstName} {user.lastName}</Link></span>}</h2>
                     <div className={classNames('info-wrapper')}>
-                        <img src={recipe.image} alt={recipe.name}/>
+                        <Image src={recipe.image} alt={recipe.name} width='600' height='600'/>
                         <section>
                             <div className={classNames('tags-and-special-container')}>
                                 <ul>Special info:

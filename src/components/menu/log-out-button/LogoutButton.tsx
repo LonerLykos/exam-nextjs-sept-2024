@@ -2,6 +2,7 @@
 
 import {useState} from "react";
 import {useRouter} from "next/navigation";
+import {logout} from "@/services/route.services";
 
 export const LogoutButton = () => {
     const [loading, setLoading] = useState(false);
@@ -11,26 +12,18 @@ export const LogoutButton = () => {
 
         setLoading(true);
         try {
-
-            const response = await fetch('/api/logout', {
-                method: 'POST',
-            });
-            if (response.ok) {
+            const response = await logout();
+            if (response === 200) {
                 router.push('/login');
-            } else {
-                console.error("Logout failed");
             }
-        } catch (error) {
-            console.error("Error during logout:", error);
         } finally {
             setLoading(false);
         }
     };
 
-
     return (
-    <button onClick={handleLogoutAction} disabled={loading}>
-        {loading ? 'Logging out...' : 'Logout'}
-    </button>
-);
+        <button onClick={handleLogoutAction} disabled={loading}>
+            {loading ? 'Logging out...' : 'Logout'}
+        </button>
+    );
 };

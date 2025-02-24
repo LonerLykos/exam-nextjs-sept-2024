@@ -1,5 +1,5 @@
 'use server';
-import {FormLoginData, login} from "@/api/api.services";
+import {FormLoginData, login} from "@/services/api.services";
 import {schema} from "@/validator/login.validator";
 import {setCookie, deleteCookie} from "cookies-next/server";
 import {LoginData} from "@/components/form/FormLogin";

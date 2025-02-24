@@ -2,7 +2,7 @@ import axios from 'axios';
 import {IUserInfoWithTokens} from "@/models/user-with-token-model/IUserInfoWithToken";
 import {ITokenPair} from "@/models/token-model/ITokenPair";
 import {cookies} from "next/headers";
-import {getAuthUser} from "@/api/helper";
+import {getAuthUser} from "@/services/helper";
 
 export type FormLoginData = {
     username: string;
