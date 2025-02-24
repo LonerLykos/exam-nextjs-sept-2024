@@ -39,7 +39,7 @@ export const UsersList = () => {
         };
         fetchData();
 
-    }, [searchParamsString]);
+    }, [searchParamsString, router, skip]);
 
     return (
         <div className={classNames('users-all-info')}>

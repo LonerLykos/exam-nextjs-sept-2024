@@ -1,9 +1,12 @@
 import {RecipesList} from "@/components/recipes/recipes-list/RecipesList";
+import {Suspense} from "react";
 
 const RecipesListPage = () => {
     return (
         <div>
-            <RecipesList/>
+            <Suspense>
+                <RecipesList/>
+            </Suspense>
         </div>
     );
 };

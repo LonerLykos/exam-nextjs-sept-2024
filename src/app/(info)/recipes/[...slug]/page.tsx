@@ -2,11 +2,11 @@ import {Metadata} from "next";
 import {FilterByTag} from "@/components/recipes/recipe-filter/FilterByTag";
 import {RecipeDetails} from "@/components/recipes/recipe-details/RecipeDetails";
 
-
 type Props = {
-    params: {slug?: string[]};
+    params: Promise<{
+        [key: string]: string | string [] | undefined
+    }>;
 };
-
 
 export const generateMetadata = async ({params}: Props): Promise<Metadata> => {
 
